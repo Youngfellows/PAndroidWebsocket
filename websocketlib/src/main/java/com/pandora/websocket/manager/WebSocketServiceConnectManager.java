@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
@@ -26,7 +27,11 @@ public class WebSocketServiceConnectManager {
 
     private Context context;
     private IWebSocketPage webSocketPage;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    /**
+     * 主线程Handler或者子线程Handler
+     */
+    private Handler mHandler;
 
     /**
      * WebSocket 服务是否绑定成功
@@ -96,6 +101,7 @@ public class WebSocketServiceConnectManager {
 
         @Override
         public void onMessageResponse(final Response message) {
+            Log.d(TAG, "onMessageResponse: " + message.getResponseText());
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -116,9 +122,23 @@ public class WebSocketServiceConnectManager {
     };
 
     public WebSocketServiceConnectManager(Context context, IWebSocketPage webSocketPage) {
+        this.mHandler = new Handler(Looper.getMainLooper());
         this.context = context;
         this.webSocketPage = webSocketPage;
         webSocketServiceBindSuccess = false;
+    }
+
+    public WebSocketServiceConnectManager(Context context, boolean isMain, IWebSocketPage webSocketPage) {
+        this.context = context;
+        this.webSocketPage = webSocketPage;
+        webSocketServiceBindSuccess = false;
+        if (isMain) {
+            this.mHandler = new Handler(Looper.getMainLooper());
+        } else {
+            HandlerThread handlerThread = new HandlerThread("ws_sub_thread");
+            handlerThread.start();
+            mHandler = new Handler(handlerThread.getLooper());
+        }
     }
 
     public void onCreate() {
@@ -127,6 +147,9 @@ public class WebSocketServiceConnectManager {
         }
     }
 
+    /**
+     * 绑定WS服务
+     */
     private void bindService() {
         binding = true;
         webSocketServiceBindSuccess = false;
@@ -135,6 +158,11 @@ public class WebSocketServiceConnectManager {
         bindTime++;
     }
 
+    /**
+     * 发送
+     *
+     * @param text
+     */
     public void sendText(String text) {
         if (webSocketServiceBindSuccess && mWebSocketService != null) {
             mWebSocketService.sendText(text);
@@ -154,6 +182,9 @@ public class WebSocketServiceConnectManager {
         }
     }
 
+    /**
+     * 连接WS
+     */
     public void reconnect() {
         if (webSocketServiceBindSuccess && mWebSocketService != null) {
             mWebSocketService.reconnect();

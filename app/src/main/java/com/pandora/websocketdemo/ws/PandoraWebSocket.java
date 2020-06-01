@@ -17,6 +17,7 @@ public class PandoraWebSocket extends AbsWebSocket {
     @Override
     public void onMessageResponse(Response message) {
         super.onMessageResponse(message);
+        Log.d(TAG, "onMessageResponse: " + Thread.currentThread().getName());
         Log.d(TAG, "onMessageResponse: " + message.getResponseText());
     }
 

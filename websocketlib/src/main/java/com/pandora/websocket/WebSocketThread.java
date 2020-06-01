@@ -26,7 +26,7 @@ import java.net.URISyntaxException;
  */
 public class WebSocketThread extends Thread {
 
-    private static final String TAG = "WebSocketLib";
+    private static final String TAG = "WebSocketThread";
 
     /**
      * WebSocket 连接地址
@@ -86,6 +86,9 @@ public class WebSocketThread extends Thread {
         return connectStatus;
     }
 
+    /**
+     * 重连
+     */
     public void reconnect() {
         mReconnectManager.performReconnect();
     }
@@ -128,6 +131,9 @@ public class WebSocketThread extends Thread {
             }
         }
 
+        /**
+         * 连接WS
+         */
         private void connect() {
             if (connectStatus == 0) {
                 connectStatus = 1;
@@ -188,6 +194,9 @@ public class WebSocketThread extends Thread {
             }
         }
 
+        /**
+         * 断开WS连接
+         */
         private void disconnect() {
             if (connectStatus == 2) {
                 Log.d(TAG, "正在关闭WebSocket连接");
@@ -199,6 +208,11 @@ public class WebSocketThread extends Thread {
             }
         }
 
+        /**
+         * 向WS发送消息
+         *
+         * @param text
+         */
         private void send(String text) {
             if (mWebSocket != null && connectStatus == 2) {
                 try {

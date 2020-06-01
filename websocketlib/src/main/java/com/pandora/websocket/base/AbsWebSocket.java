@@ -15,7 +15,7 @@ public class AbsWebSocket implements IWebSocketPage {
     private WebSocketServiceConnectManager mConnectManager;
 
     public AbsWebSocket(Context context) {
-        mConnectManager = new WebSocketServiceConnectManager(context, this);
+        mConnectManager = new WebSocketServiceConnectManager(context, false, this);
         mConnectManager.onCreate();
     }
 
@@ -27,6 +27,7 @@ public class AbsWebSocket implements IWebSocketPage {
     @Override
     public void sendText(String text) {
         Log.d(TAG, "sendText: " + text);
+        Log.d(TAG, "sendText: " + Thread.currentThread().getName());
         mConnectManager.sendText(text);
     }
 
@@ -53,7 +54,7 @@ public class AbsWebSocket implements IWebSocketPage {
 
     @Override
     public void onMessageResponse(Response message) {
-        Log.d(TAG, "onMessageResponse: ");
+        Log.d(TAG, "onMessageResponse: supper," + message.getResponseText());
     }
 
     @Override

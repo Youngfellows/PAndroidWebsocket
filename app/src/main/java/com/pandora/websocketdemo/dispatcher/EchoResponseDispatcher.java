@@ -36,6 +36,7 @@ public class EchoResponseDispatcher implements IResponseDispatcher {
      */
     @Override
     public void onMessageResponse(Response message, ResponseDelivery delivery) {
+        Log.d(LOGTAG, "onMessageResponse: " + message.getResponseText());
         try {
             LoginResponseEntity responseEntity = JSON.parseObject(message.getResponseText(), new TypeReference<LoginResponseEntity>() {
             });

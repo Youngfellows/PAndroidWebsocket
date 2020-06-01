@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.pandora.websocket.deliver.ResponseDelivery;
 import com.pandora.websocket.WebSocketSetting;
@@ -23,6 +24,8 @@ import com.pandora.websocket.response.ErrorResponse;
  */
 public class WebSocketService extends Service implements SocketListener {
 
+    private String TAG = this.getClass().getSimpleName();
+
     private WebSocketThread mWebSocketThread;
 
     private ResponseDelivery mResponseDelivery = new ResponseDelivery();
@@ -33,6 +36,7 @@ public class WebSocketService extends Service implements SocketListener {
      * 监听网络变化广播是否已注册
      */
     private boolean networkChangedReceiverRegist = false;
+
     /**
      * 监听网络变化
      */
@@ -85,6 +89,11 @@ public class WebSocketService extends Service implements SocketListener {
         super.onDestroy();
     }
 
+    /**
+     * 向WS发送消息
+     *
+     * @param text
+     */
     public void sendText(String text) {
         if (mWebSocketThread.getHandler() == null) {
             ErrorResponse errorResponse = new ErrorResponse();
@@ -142,6 +151,7 @@ public class WebSocketService extends Service implements SocketListener {
 
     @Override
     public void onMessageResponse(Response message) {
+        Log.d(TAG, "onMessageResponse: " + message.getResponseText());
         responseDispatcher.onMessageResponse(message, mResponseDelivery);
     }
 
