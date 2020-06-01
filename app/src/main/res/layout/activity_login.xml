@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.zhangke.websocketdemo.LoginActivity">
+    tools:context="com.pandora.websocketdemo.LoginActivity">
 
     <EditText
         android:id="@+id/et_account"
