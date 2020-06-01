@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pandora.websocket.base.AbsWebSocketActivity;
 import com.pandora.websocket.response.ErrorResponse;
 import com.pandora.websocket.interf.Response;
+import com.pandora.websocketdemo.response.LoginResponse;
 
 public class LoginActivity extends AbsWebSocketActivity {
 
@@ -41,7 +42,7 @@ public class LoginActivity extends AbsWebSocketActivity {
             public void onClick(View v) {
                 String account = etAccount.getText().toString();
                 String password = etPassword.getText().toString();
-                if(TextUtils.isEmpty(account) || TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(account) || TextUtils.isEmpty(password)) {
                     UiUtil.showToast(LoginActivity.this, "输入不能为空");
                     return;
                 }
@@ -50,7 +51,7 @@ public class LoginActivity extends AbsWebSocketActivity {
         });
     }
 
-    private void login(String account, String password){
+    private void login(String account, String password) {
         JSONObject params = new JSONObject();
         JSONObject command = new JSONObject();
         JSONObject parameters = new JSONObject();
@@ -67,7 +68,7 @@ public class LoginActivity extends AbsWebSocketActivity {
 
     @Override
     public void onMessageResponse(Response message) {
-        UiUtil.showToast(LoginActivity.this, "登陆成功: " + ((CommonResponse)message).getResponseEntity().getMessage());
+        UiUtil.showToast(LoginActivity.this, "登陆成功: " + ((LoginResponse) message).getResponseEntity().getParameters().getUsername());
     }
 
     @Override

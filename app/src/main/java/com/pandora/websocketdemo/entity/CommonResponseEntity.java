@@ -1,4 +1,4 @@
-package com.pandora.websocketdemo;
+package com.pandora.websocketdemo.entity;
 
 /**
  * 后台接口返回的数据格式

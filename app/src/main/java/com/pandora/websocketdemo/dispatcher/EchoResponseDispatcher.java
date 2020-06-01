@@ -1,18 +1,20 @@
-package com.pandora.websocketdemo;
+package com.pandora.websocketdemo.dispatcher;
 
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.TypeReference;
-import com.pandora.websocket.response.ErrorResponse;
+import com.pandora.websocket.deliver.ResponseDelivery;
 import com.pandora.websocket.interf.IResponseDispatcher;
 import com.pandora.websocket.interf.Response;
-import com.pandora.websocket.deliver.ResponseDelivery;
+import com.pandora.websocket.response.ErrorResponse;
+import com.pandora.websocketdemo.entity.LoginResponseEntity;
+import com.pandora.websocketdemo.response.LoginResponse;
 
-public class AppResponseDispatcher implements IResponseDispatcher {
+public class EchoResponseDispatcher implements IResponseDispatcher {
 
-    private static final String LOGTAG = "AppResponseDispatcher";
+    private static final String LOGTAG = "EchoResponseDispatcher";
 
     @Override
     public void onConnected(ResponseDelivery delivery) {
@@ -35,16 +37,17 @@ public class AppResponseDispatcher implements IResponseDispatcher {
     @Override
     public void onMessageResponse(Response message, ResponseDelivery delivery) {
         try {
-            CommonResponseEntity responseEntity = JSON.parseObject(message.getResponseText(), new TypeReference<CommonResponseEntity>() {
+            LoginResponseEntity responseEntity = JSON.parseObject(message.getResponseText(), new TypeReference<LoginResponseEntity>() {
             });
-            CommonResponse commonResponse = new CommonResponse(message.getResponseText(), responseEntity);
-            if (commonResponse.getResponseEntity().getCode() >= 1000) {
-                delivery.onMessageResponse(commonResponse);
+            LoginResponse loginResponse = new LoginResponse(message.getResponseText(), responseEntity);
+            if (loginResponse != null) {
+                delivery.onMessageResponse(loginResponse);
             } else {
                 ErrorResponse errorResponse = new ErrorResponse();
                 errorResponse.setErrorCode(12);
-                errorResponse.setDescription(commonResponse.getResponseEntity().getMessage());
+                errorResponse.setDescription(loginResponse.getResponseEntity().getParameters().getUsername());
                 errorResponse.setResponseText(message.getResponseText());
+                errorResponse.setCause(new Throwable("xxxxxxxxxxxx"));
                 //将已经解析好的 CommonResponseEntity 独享保存起来以便后面使用
                 errorResponse.setReserved(responseEntity);
                 onSendMessageError(errorResponse, delivery);

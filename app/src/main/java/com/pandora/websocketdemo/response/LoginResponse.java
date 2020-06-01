@@ -1,13 +1,15 @@
-package com.pandora.websocketdemo;
+package com.pandora.websocketdemo.response;
 
 import com.pandora.websocket.interf.Response;
+import com.pandora.websocketdemo.entity.LoginResponseEntity;
 
-public class CommonResponse implements Response<CommonResponseEntity> {
+public class LoginResponse implements Response<LoginResponseEntity> {
 
     private String responseText;
-    private CommonResponseEntity responseEntity;
 
-    public CommonResponse(String responseText, CommonResponseEntity responseEntity) {
+    private LoginResponseEntity responseEntity;
+
+    public LoginResponse(String responseText, LoginResponseEntity responseEntity) {
         this.responseText = responseText;
         this.responseEntity = responseEntity;
     }
@@ -23,12 +25,12 @@ public class CommonResponse implements Response<CommonResponseEntity> {
     }
 
     @Override
-    public CommonResponseEntity getResponseEntity() {
+    public LoginResponseEntity getResponseEntity() {
         return this.responseEntity;
     }
 
     @Override
-    public void setResponseEntity(CommonResponseEntity responseEntity) {
+    public void setResponseEntity(LoginResponseEntity responseEntity) {
         this.responseEntity = responseEntity;
     }
 }
