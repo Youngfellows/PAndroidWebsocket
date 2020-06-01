@@ -21,16 +21,18 @@ public class AbsWebSocket implements IWebSocketPage {
 
     @Override
     public void onServiceBindSuccess() {
-
+        Log.d(TAG, "onServiceBindSuccess: ");
     }
 
     @Override
     public void sendText(String text) {
+        Log.d(TAG, "sendText: " + text);
         mConnectManager.sendText(text);
     }
 
     @Override
     public void reconnect() {
+        Log.d(TAG, "reconnect: ");
         mConnectManager.reconnect();
     }
 
