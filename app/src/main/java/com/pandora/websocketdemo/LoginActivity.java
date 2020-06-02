@@ -8,10 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSONObject;
+import com.pandora.websocket.WebSocketSetting;
 import com.pandora.websocket.base.AbsWebSocketActivity;
 import com.pandora.websocket.response.ErrorResponse;
 import com.pandora.websocket.interf.Response;
+import com.pandora.websocketdemo.conf.Token;
 import com.pandora.websocketdemo.response.LoginResponse;
+
+import java.util.List;
+import java.util.Random;
 
 public class LoginActivity extends AbsWebSocketActivity {
 
@@ -64,6 +69,15 @@ public class LoginActivity extends AbsWebSocketActivity {
         params.put("command", command);
         params.put("parameters", parameters);
         sendText(params.toJSONString());
+    }
+
+    @Override
+    public void resetConnect() {
+        //配置 WebSocket，必须在 WebSocket 服务启动前设置
+        Token token = new Token();
+        String wsHost = token.wsHost();
+        WebSocketSetting.setConnectUrl(wsHost);//必选
+        super.resetConnect();
     }
 
     @Override

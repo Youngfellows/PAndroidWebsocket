@@ -42,6 +42,11 @@ public abstract class AbsWebSocketFragment extends Fragment implements IWebSocke
         mConnectManager.disconnect();
     }
 
+    @Override
+    public void resetConnect() {
+        mConnectManager.reconnect();
+    }
+
     /**
      * 服务绑定成功时的回调，可以在此初始化数据
      */

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.pandora.websocket.service.WebSocketService;
 import com.pandora.websocket.WebSocketSetting;
+import com.pandora.websocketdemo.conf.Token;
 import com.pandora.websocketdemo.dispatcher.EchoResponseDispatcher;
 
 
@@ -30,7 +31,10 @@ public class App extends Application {
 
     public void init() {
         //配置 WebSocket，必须在 WebSocket 服务启动前设置
-        WebSocketSetting.setConnectUrl("wss://echo.websocket.org");//必选
+        Token token = new Token();
+        String wsHost = token.wsHost();
+        WebSocketSetting.setConnectUrl(wsHost);//必选
+        //WebSocketSetting.setConnectUrl("wss://echo.websocket.org");//必选
         //WebSocketSetting.setResponseProcessDelivery(new AppResponseDispatcher());
         WebSocketSetting.setResponseProcessDelivery(new EchoResponseDispatcher());
         WebSocketSetting.setReconnectWithNetworkChanged(true);

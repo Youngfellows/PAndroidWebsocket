@@ -23,9 +23,10 @@ import com.pandora.websocket.service.WebSocketService;
  */
 public class WebSocketServiceConnectManager {
 
-    private static final String TAG = "WebSocketLib";
+    private final String TAG = this.getClass().getSimpleName();
 
     private Context context;
+
     private IWebSocketPage webSocketPage;
 
     /**
@@ -37,6 +38,10 @@ public class WebSocketServiceConnectManager {
      * WebSocket 服务是否绑定成功
      */
     private boolean webSocketServiceBindSuccess = false;
+
+    /**
+     * WS服务
+     */
     protected WebSocketService mWebSocketService;
 
     private int bindTime = 0;
@@ -218,6 +223,29 @@ public class WebSocketServiceConnectManager {
             WebSocketSetting.getResponseProcessDelivery().onSendMessageError(errorResponse, delivery);
         }
     }
+
+
+    /**
+     * 重置WS连接
+     */
+    public void resetConnect() {
+        if (webSocketServiceBindSuccess && mWebSocketService != null) {
+            mWebSocketService.resetConnect();
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setErrorCode(2);
+            errorResponse.setCause(new Throwable("WebSocketService dose not bind!"));
+            ResponseDelivery delivery = new ResponseDelivery();
+            delivery.addListener(mSocketListener);
+            WebSocketSetting.getResponseProcessDelivery().onSendMessageError(errorResponse, delivery);
+            if (!binding) {
+                bindTime = 0;
+                Log.d(TAG, String.format("WebSocketService 连接断开，开始第%s次重连", bindTime));
+                bindService();
+            }
+        }
+    }
+
 
     public void onDestroy() {
         binding = false;

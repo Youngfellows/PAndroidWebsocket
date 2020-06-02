@@ -157,6 +157,18 @@ public class WebSocketService extends Service implements SocketListener {
         }
     }
 
+    /**
+     * 重置WebSocket连接
+     */
+    public void resetConnect() {
+        if (mWebSocketThread.getHandler() == null) {
+            onConnectError(new Throwable("WebSocket dose not ready"));
+        } else {
+            mWebSocketThread.setConnectUrl(WebSocketSetting.getConnectUrl());
+            mWebSocketThread.getHandler().sendEmptyMessage(MessageType.RESET_CONNECT);
+        }
+    }
+
     @Override
     public void onConnected() {
         responseDispatcher.onConnected(mResponseDelivery);

@@ -16,15 +16,26 @@ import java.util.concurrent.Executors;
  */
 public class ReconnectManager {
 
-    private static final String TAG = "WebSocketLib";
+    private final String TAG = this.getClass().getSimpleName();
 
+    /**
+     * WS线程
+     */
     private WebSocketThread mWebSocketThread;
 
     /**
      * 是否正在重连
      */
     private volatile boolean retrying;
+
+    /**
+     * 是否销毁资源
+     */
     private volatile boolean destroyed;
+
+    /**
+     * 线程池
+     */
     private final ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
 
     public ReconnectManager(WebSocketThread mWebSocketThread) {

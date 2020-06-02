@@ -16,7 +16,7 @@ import com.pandora.websocket.service.WebSocketService;
  */
 public class NetworkChangedReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = "NetworkChangedReceiver";
+    private final String TAG = this.getClass().getSimpleName();
 
     private WebSocketService socketService;
 
@@ -39,15 +39,15 @@ public class NetworkChangedReceiver extends BroadcastReceiver {
             if (activeNetwork != null) {
                 if (activeNetwork.isConnected()) {
                     if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                        Log.i(LOGTAG, "网络连接发生变化，当前WiFi连接可用，正在尝试重连。");
+                        Log.i(TAG, "网络连接发生变化，当前WiFi连接可用，正在尝试重连。");
                     } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                        Log.i(LOGTAG, "网络连接发生变化，当前移动连接可用，正在尝试重连。");
+                        Log.i(TAG, "网络连接发生变化，当前移动连接可用，正在尝试重连。");
                     }
                     if (socketService != null) {
                         socketService.reconnect();
                     }
                 } else {
-                    Log.i(LOGTAG, "当前没有可用网络");
+                    Log.i(TAG, "当前没有可用网络");
                 }
             }
         }

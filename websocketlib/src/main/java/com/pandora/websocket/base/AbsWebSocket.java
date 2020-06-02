@@ -43,6 +43,11 @@ public class AbsWebSocket implements IWebSocketPage {
     }
 
     @Override
+    public void resetConnect() {
+        mConnectManager.resetConnect();
+    }
+
+    @Override
     public void onConnected() {
         Log.d(TAG, "onConnected: ");
     }

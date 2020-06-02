@@ -26,4 +26,9 @@ public interface IWebSocketPage extends SocketListener {
      * 断开WebSocket连接
      */
     void disconnect();
+
+    /**
+     * 重置连接
+     */
+    void resetConnect();
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.pandora.websocket.service.WebSocketService;
 import com.pandora.websocketdemo.ws.PandoraWebSocket;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
         //启动 WebSocket 服务
         //startService(new Intent(this, WebSocketService.class));
         mPandoraWebSocket.reconnect();
+    }
+
+    /**
+     * 切换WS服务连接
+     *
+     * @param view
+     */
+    public void onHostChange(View view) {
+        //启动 WebSocket 服务
+        //startService(new Intent(this, WebSocketService.class));
+        mPandoraWebSocket.resetConnect();
     }
 
     /**

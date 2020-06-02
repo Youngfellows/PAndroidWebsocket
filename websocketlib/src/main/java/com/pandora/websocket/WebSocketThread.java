@@ -19,6 +19,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.NotYetConnectedException;
 
 /**
  * WebSocket 线程，
@@ -26,21 +27,33 @@ import java.net.URISyntaxException;
  */
 public class WebSocketThread extends Thread {
 
-    private static final String TAG = "WebSocketThread";
+    private final String TAG = this.getClass().getSimpleName();
 
     /**
      * WebSocket 连接地址
      */
     private String connectUrl;
 
+    /**
+     * WebSocket客户端
+     */
     private WebSocketClient mWebSocket;
 
+    /**
+     * 子线程Handler
+     */
     private WebSocketHandler mHandler;
 
-    private boolean quit;
-    private SocketListener mSocketListener;
 
+    /**
+     * 重连管理器
+     */
     private ReconnectManager mReconnectManager;
+
+    /**
+     * WebSocket监听器
+     */
+    private SocketListener mSocketListener;
 
     /**
      * 0-未连接
@@ -49,9 +62,18 @@ public class WebSocketThread extends Thread {
      */
     private int connectStatus = 0;
 
+    /**
+     * 是否退出线程
+     */
+    private boolean quit;
+
     public WebSocketThread(String connectUrl) {
         this.connectUrl = connectUrl;
         mReconnectManager = new ReconnectManager(this);
+    }
+
+    public void setConnectUrl(String connectUrl) {
+        this.connectUrl = connectUrl;
     }
 
     @Override
@@ -80,9 +102,7 @@ public class WebSocketThread extends Thread {
     }
 
     /**
-     * 是否已经连接
-     *
-     * @return
+     * WebSock是否已经连接
      */
     public boolean isConnected() {
         if (mWebSocket != null) {
@@ -121,6 +141,9 @@ public class WebSocketThread extends Thread {
                 case MessageType.DISCONNECT:
                     disconnect();
                     break;
+                case MessageType.RESET_CONNECT:
+                    resetConnect();
+                    break;
                 case MessageType.QUIT:
                     quit();
                     break;
@@ -143,6 +166,9 @@ public class WebSocketThread extends Thread {
                             mReconnectManager.performReconnect();
                         }
                     }
+                    break;
+                case MessageType.SEND_PING:
+                    sendPing();
                     break;
             }
         }
@@ -231,6 +257,18 @@ public class WebSocketThread extends Thread {
         }
 
         /**
+         * 重置WS连接
+         */
+        private void resetConnect() {
+            Log.d(TAG, "resetConnect: reset ws connect ... ");
+            disconnect();
+            if (mWebSocket != null) {
+                mWebSocket = null;
+            }
+            connect();
+        }
+
+        /**
          * 向WS发送消息
          *
          * @param text
@@ -251,6 +289,33 @@ public class WebSocketThread extends Thread {
                         errorResponse.setErrorCode(1);
                         errorResponse.setCause(new Throwable("WebSocket does not connected or closed!"));
                         errorResponse.setRequestText(text);
+                        mSocketListener.onSendMessageError(errorResponse);
+                    }
+                    mReconnectManager.performReconnect();
+                }
+            }
+        }
+
+        /**
+         * 发送心跳
+         */
+        private void sendPing() {
+            Log.d(TAG, "sendPing: ");
+            if (mWebSocket != null && connectStatus == 2) {
+                try {
+                    mWebSocket.sendPing();
+                } catch (NotYetConnectedException e) {
+                    e.printStackTrace();
+                    connectStatus = 0;
+                    Log.e(TAG, "sendPing()", e);
+                    Log.e(TAG, "连接已断开，发送ping失败：", e);
+                    if (mSocketListener != null) {
+                        mSocketListener.onDisconnected();
+
+                        ErrorResponse errorResponse = new ErrorResponse();
+                        errorResponse.setErrorCode(1);
+                        errorResponse.setCause(new Throwable("WebSocket does not connected or closed!"));
+                        errorResponse.setRequestText("连接已断开，发送ping失败");
                         mSocketListener.onSendMessageError(errorResponse);
                     }
                     mReconnectManager.performReconnect();
