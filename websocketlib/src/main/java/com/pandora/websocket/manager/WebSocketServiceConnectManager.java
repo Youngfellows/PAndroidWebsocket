@@ -203,6 +203,22 @@ public class WebSocketServiceConnectManager {
         }
     }
 
+    /**
+     * 断开WebSocket连接
+     */
+    public void disconnect() {
+        if (webSocketServiceBindSuccess && mWebSocketService != null) {
+            mWebSocketService.disconnect();
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setErrorCode(2);
+            errorResponse.setCause(new Throwable("WebSocketService dose not bind!"));
+            ResponseDelivery delivery = new ResponseDelivery();
+            delivery.addListener(mSocketListener);
+            WebSocketSetting.getResponseProcessDelivery().onSendMessageError(errorResponse, delivery);
+        }
+    }
+
     public void onDestroy() {
         binding = false;
         bindTime = 0;

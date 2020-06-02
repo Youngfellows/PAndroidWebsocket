@@ -1,2 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pandora.websocket" />
+    package="com.pandora.websocket">
+
+    <application>
+        <service android:name="com.pandora.websocket.service.WebSocketService" />
+
+        <receiver android:name="com.pandora.websocket.receiver.NetworkChangedReceiver" />
+    </application>
+</manifest>

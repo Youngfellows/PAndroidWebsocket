@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.pandora.websocket.service.WebSocketService;
 import com.pandora.websocket.WebSocketSetting;
-import com.pandora.websocketdemo.dispatcher.AppResponseDispatcher;
 import com.pandora.websocketdemo.dispatcher.EchoResponseDispatcher;
 
 

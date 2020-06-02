@@ -38,6 +38,11 @@ public class AbsWebSocket implements IWebSocketPage {
     }
 
     @Override
+    public void disconnect() {
+        mConnectManager.disconnect();
+    }
+
+    @Override
     public void onConnected() {
         Log.d(TAG, "onConnected: ");
     }

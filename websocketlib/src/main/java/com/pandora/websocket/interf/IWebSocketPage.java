@@ -21,4 +21,9 @@ public interface IWebSocketPage extends SocketListener {
      * 重新连接，内部已经做了自动重连机制，一般不需要使用此方法
      */
     void reconnect();
+
+    /**
+     * 断开WebSocket连接
+     */
+    void disconnect();
 }

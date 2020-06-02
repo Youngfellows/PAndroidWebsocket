@@ -33,6 +33,11 @@ public abstract class AbsWebSocketActivity extends AppCompatActivity implements 
         mConnectManager.reconnect();
     }
 
+    @Override
+    public void disconnect() {
+        mConnectManager.disconnect();
+    }
+
     /**
      * 服务绑定成功时的回调，可以在此初始化数据
      */

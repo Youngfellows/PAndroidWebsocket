@@ -68,7 +68,7 @@ public class ReconnectManager {
                                 } else if (mWebSocketThread.getConnectState() == 1) {
                                     continue;
                                 } else {
-                                    handler.sendEmptyMessage(MessageType.CONNECT);
+                                    handler.sendEmptyMessageDelayed(MessageType.CONNECT, 1000 * 3);
                                 }
                             } else {
                                 break;

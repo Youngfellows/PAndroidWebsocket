@@ -80,6 +80,22 @@ public class WebSocketThread extends Thread {
     }
 
     /**
+     * 是否已经连接
+     *
+     * @return
+     */
+    public boolean isConnected() {
+        if (mWebSocket != null) {
+            boolean isClosed = mWebSocket.isClosed();
+            boolean isClosing = mWebSocket.isClosing();
+            boolean isConnecting = mWebSocket.isConnecting();
+            boolean isOpen = mWebSocket.isOpen();
+            Log.d(TAG, "isConnected: isClosed: " + isClosed + ",isClosing: " + isClosing + ",isConnecting: " + isConnecting + ",isOpen: " + isOpen);
+        }
+        return false;
+    }
+
+    /**
      * 获取连接状态
      */
     public int getConnectState() {
@@ -135,6 +151,8 @@ public class WebSocketThread extends Thread {
          * 连接WS
          */
         private void connect() {
+            Log.w(TAG, "connect: connectStatus: " + connectStatus + ",connectUrl: " + connectUrl);
+            isConnected();
             if (connectStatus == 0) {
                 connectStatus = 1;
                 try {
@@ -151,6 +169,7 @@ public class WebSocketThread extends Thread {
                                 if (mSocketListener != null) {
                                     mSocketListener.onConnected();
                                 }
+                                mHandler.removeMessages(MessageType.CONNECT);
                             }
 
                             @Override
@@ -187,6 +206,7 @@ public class WebSocketThread extends Thread {
                 } catch (URISyntaxException e) {
                     connectStatus = 0;
                     Log.d(TAG, "WebSocket 连接失败");
+                    e.printStackTrace();
                     if (mSocketListener != null) {
                         mSocketListener.onConnectError(e);
                     }
@@ -198,6 +218,8 @@ public class WebSocketThread extends Thread {
          * 断开WS连接
          */
         private void disconnect() {
+            Log.d(TAG, "disconnect: ");
+            isConnected();
             if (connectStatus == 2) {
                 Log.d(TAG, "正在关闭WebSocket连接");
                 if (mWebSocket != null) {

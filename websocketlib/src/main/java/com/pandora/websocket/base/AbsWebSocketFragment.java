@@ -37,6 +37,11 @@ public abstract class AbsWebSocketFragment extends Fragment implements IWebSocke
         mConnectManager.reconnect();
     }
 
+    @Override
+    public void disconnect() {
+        mConnectManager.disconnect();
+    }
+
     /**
      * 服务绑定成功时的回调，可以在此初始化数据
      */
@@ -52,6 +57,8 @@ public abstract class AbsWebSocketFragment extends Fragment implements IWebSocke
     public void onConnected() {
 
     }
+
+
 
     /**
      * WebSocket 连接出错事件

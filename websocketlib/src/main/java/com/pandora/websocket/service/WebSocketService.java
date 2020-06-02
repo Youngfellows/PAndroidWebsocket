@@ -62,6 +62,9 @@ public class WebSocketService extends Service implements SocketListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i(TAG, "onCreate: ");
+
+        //连接WebSocket
         mWebSocketThread = new WebSocketThread(WebSocketSetting.getConnectUrl());
         mWebSocketThread.setSocketListener(this);
         mWebSocketThread.start();
@@ -78,6 +81,14 @@ public class WebSocketService extends Service implements SocketListener {
             registerReceiver(networkChangedReceiver, filter);
             networkChangedReceiverRegist = true;
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand: ");
+        //重新连接WS
+        reconnect();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -131,6 +142,18 @@ public class WebSocketService extends Service implements SocketListener {
             onConnectError(new Throwable("WebSocket dose not ready"));
         } else {
             mWebSocketThread.getHandler().sendEmptyMessage(MessageType.CONNECT);
+        }
+    }
+
+
+    /**
+     * 断开WebSocket连接
+     */
+    public void disconnect() {
+        if (mWebSocketThread.getHandler() == null) {
+            onConnectError(new Throwable("WebSocket dose not ready"));
+        } else {
+            mWebSocketThread.getHandler().sendEmptyMessage(MessageType.DISCONNECT);
         }
     }
 
